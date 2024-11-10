@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +36,7 @@ fun CountryCreateNew(navController: NavController, countryViewModel: CountryView
     var countryName by remember { mutableStateOf(TextFieldValue("")) }
     var countryCapital by remember { mutableStateOf(TextFieldValue("")) }
     var flagUrl by remember { mutableStateOf(TextFieldValue("")) }
+    var showAlert by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -70,13 +72,13 @@ fun CountryCreateNew(navController: NavController, countryViewModel: CountryView
                     label = { Text("Capital del país") },
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 OutlinedTextField(
                     value = flagUrl,
                     onValueChange = { flagUrl = it },
                     label = { Text("URL de la bandera") },
                     modifier = Modifier.fillMaxWidth()
                 )
+
                 Button(
                     onClick = {
                         countryViewModel.addCountry(
@@ -89,7 +91,7 @@ fun CountryCreateNew(navController: NavController, countryViewModel: CountryView
                         countryName = TextFieldValue("")
                         countryCapital = TextFieldValue("")
                         flagUrl = TextFieldValue("")
-                        navController.popBackStack()
+                        showAlert = true
                     },
                     modifier = Modifier
                         .padding(top = 16.dp)
@@ -98,7 +100,27 @@ fun CountryCreateNew(navController: NavController, countryViewModel: CountryView
                     Text("Agregar país")
                 }
             }
-
+        }
+        if (showAlert) {
+            AlertDialog(
+                onDismissRequest = {
+                    showAlert = false // Cerrar alerta
+                },
+                confirmButton = {
+                    Button(onClick = {
+                        showAlert = false
+                        navController.popBackStack()
+                    }) {
+                        Text("OK")
+                    }
+                },
+                title = {
+                    Text("País agregado")
+                },
+                text = {
+                    Text("El país se ha agregado exitosamente.")
+                }
+            )
         }
     }
 }
